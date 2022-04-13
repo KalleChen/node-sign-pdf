@@ -1,6 +1,6 @@
 import fs from 'fs'
-import signer from 'node-signPdf/signpdf'
-import { plainAddPlaceholder } from 'node-signPdf/helpers/index.js'
+import signer from 'signpdf'
+import { plainAddPlaceholder } from 'signpdf/dist/helpers/index.js'
 import path from 'path'
 
 const pdfPath = 'assets/sample.pdf'
@@ -14,8 +14,13 @@ const main = async () => {
   const inputBuffer = plainAddPlaceholder({
     pdfBuffer,
   })
-  const signedPdf = await signer.sign(inputBuffer, certBuffer)
-  fs.writeFileSync(path.join(__dirname, './signed.pdf'), signedPdf)
+  const signedPdf = await signer.sign(inputBuffer, certBuffer, {
+    tsa: 'https://freetsa.org/tsr',
+  })
+  fs.writeFileSync(
+    path.join(__dirname, './signed_with_timestamp.pdf'),
+    signedPdf
+  )
 }
 
 main()
